@@ -1,0 +1,19 @@
+  method SALESORDERSET_GET_ENTITYSET.
+DATA:      ls_max_rows   TYPE bapi_epm_max_rows,
+           lt_salesorder TYPE TABLE OF bapi_epm_so_header,
+           ls_salesorder TYPE bapi_epm_so_header,
+           ls_entityset  TYPE ZCL_ZSL_EMP_DEMO_MPC=>TS_SALESORDER.
+
+    ls_max_rows-bapimaxrow = 20.
+    CALL FUNCTION 'BAPI_EPM_SO_GET_LIST'
+      EXPORTING
+        max_rows     = ls_max_rows
+      TABLES
+        soheaderdata = lt_salesorder.
+    IF lt_salesorder IS NOT INITIAL.
+      LOOP AT lt_salesorder INTO ls_salesorder.
+        MOVE-CORRESPONDING ls_salesorder TO ls_entityset.
+        APPEND ls_entityset TO et_entityset.
+      ENDLOOP.
+    ENDIF.
+  endmethod.

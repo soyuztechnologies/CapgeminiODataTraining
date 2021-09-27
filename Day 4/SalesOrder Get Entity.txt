@@ -1,0 +1,21 @@
+  method SALESORDERSET_GET_ENTITY.
+DATA: lwa_key_tab TYPE /iwbep/s_mgw_name_value_pair,
+      lv_so_id    TYPE snwd_so_id,
+      lwa_snwd_so TYPE snwd_so.
+
+* To get the Sales Order#
+READ TABLE it_key_tab INTO lwa_key_tab WITH KEY name = 'SoId'.
+IF sy-subrc = 0.
+lv_so_id = lwa_key_tab-value.
+ENDIF.
+
+* Alpha Conversion
+CALL FUNCTION 'CONVERSION_EXIT_ALPHA_INPUT'
+  EXPORTING
+    input         = lv_so_id
+ IMPORTING
+   output        = lv_so_id.
+
+* Get the data from the table
+SELECT SINGLE * FROM snwd_so INTO CORRESPONDING FIELDS OF er_entity WHERE so_id = lv_so_id.
+  endmethod.
