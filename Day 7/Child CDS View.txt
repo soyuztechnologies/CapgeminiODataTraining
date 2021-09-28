@@ -1,0 +1,11 @@
+@AbapCatalog.sqlViewName: 'Z_DEMO_NAV_CHILD'
+@AbapCatalog.compiler.compareFilter: true
+@AbapCatalog.preserveKey: true
+@AccessControl.authorizationCheck: #CHECK
+@EndUserText.label: 'Demo child nav'
+define view z_demo_nav_child01 as select from snwd_so_i {
+    
+key snwd_so_i.parent_key,    
+key snwd_so_i.node_key,
+snwd_so_i.so_item_pos
+}

@@ -1,0 +1,13 @@
+@AbapCatalog.sqlViewName: 'Z_DEMO_ROOT01'
+@AbapCatalog.compiler.compareFilter: true
+@AbapCatalog.preserveKey: true
+@AccessControl.authorizationCheck: #CHECK
+@EndUserText.label: 'Root nav'
+define view z_demo_nav_root01 as select from snwd_so
+  association [1..*] to z_demo_nav_child01 as _item 
+  on $projection.node_key = _item.parent_key
+{
+  key snwd_so.node_key,
+      snwd_so.so_id,
+      _item
+}

@@ -1,0 +1,50 @@
+@AbapCatalog.sqlViewName: 'ZJOKER'
+@AbapCatalog.compiler.compareFilter: true
+@AbapCatalog.preserveKey: true
+@AccessControl.authorizationCheck: #CHECK
+@EndUserText.label: 'Basic CDS View'
+define view ZCDS_JAN_BASIC with parameters
+p_role: abap.char(2)
+ as select from snwd_bpa {
+    //snwd_bpa
+    key node_key,
+    case bp_role 
+        when '01' then 'Customer'
+        else 'Supplier' end as bp_role,
+    bp_id,
+    company_name
+} where bp_role = $parameters.p_role
+
+
+
+*&---------------------------------------------------------------------*
+*& Report zcall_jan_cds_view
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT zcall_jan_cds_view.
+
+data : ls_bp type snwd_bpa.
+SELECT-OPTIONS : s_bp for ls_bp-bp_id.
+PARAMETERS : prole TYPE c LENGTH 2.
+
+select * from ZCDS_JAN_BASIC( p_role = @prole ) into table @data(itab)
+where bp_id in @s_bp.
+
+cl_demo_output=>display_data(
+  EXPORTING
+    value = itab
+*    name  =
+).
+
+**** Extend CDS View
+@AbapCatalog.sqlViewAppendName: 'ZCDSJANEXT'
+@EndUserText.label: 'Extend My Standard View'
+extend view ZCDS_JAN_BASIC with ZCDS_JAN_EXTENSION {
+    $parameters.p_role as Zrole,
+    email_address as zemail
+}
+
+
+
+
