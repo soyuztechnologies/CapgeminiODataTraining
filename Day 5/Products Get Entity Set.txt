@@ -1,0 +1,3 @@
+  method PRODUCTSSET_GET_ENTITYSET.
+    Select * from zbip_products into TABLE et_entityset.
+  endmethod.

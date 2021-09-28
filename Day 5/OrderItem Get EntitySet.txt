@@ -1,0 +1,19 @@
+  METHOD orderitemsset_get_entityset.
+
+    READ TABLE it_key_tab INTO DATA(ls_key) INDEX 1.
+
+    DATA : lv_order_id TYPE char32.
+    lv_order_id = ls_key-value.
+
+    "will be called when we get agencycd using agency association
+
+    IF ls_key-name = 'OrderId'.
+      SELECT * FROM zbip_orders_i
+      INTO CORRESPONDING FIELDS OF TABLE et_entityset
+      WHERE order_id = lv_order_id.
+    ELSE .
+      SELECT * FROM zbip_orders_i
+  INTO CORRESPONDING FIELDS OF TABLE et_entityset.
+    ENDIF.
+
+  ENDMETHOD.

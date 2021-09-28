@@ -1,0 +1,3 @@
+  method ORDERSSET_GET_ENTITYSET.
+     Select * from zbip_orders1 INTO CORRESPONDING FIELDS OF TABLE et_entityset.
+  endmethod.

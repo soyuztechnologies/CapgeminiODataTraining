@@ -1,0 +1,46 @@
+  method /IWBEP/IF_MGW_APPL_SRV_RUNTIME~CREATE_DEEP_ENTITY.
+
+  Data : ls_deep_entity TYPE zcl_zbip_odata_mpc_ext=>ts_deep_entity,
+         ls_order TYPE zbip_orders1,
+         lt_items TYPE TABLE OF zbip_orders_i,
+         ls_items LIKE LINE OF lt_items.
+
+  io_data_provider->read_entry_data(
+   IMPORTING
+        es_data = ls_deep_entity
+  ).
+*  CATCH /iwbep/cx_mgw_tech_exception. " mgw technical exception
+  MOVE-CORRESPONDING ls_deep_entity TO ls_order.
+
+  ls_order-order_id = cl_uuid_factory=>create_system_uuid( )->create_uuid_c32( ).
+*                                                           CATCH cx_uuid_error. " Error Class for UUID Processing Errors
+
+  INSERT INTO zbip_orders1 VALUES ls_order.
+
+
+  LOOP AT ls_deep_entity-oitemsus into data(ls_item).
+
+    MOVE-CORRESPONDING ls_item TO ls_items.
+
+    ls_items-order_id = ls_order-order_id.
+
+    ls_items-item_id = cl_uuid_factory=>create_system_uuid( )->create_uuid_c32( ).
+*                                                            CATCH cx_uuid_error. " Error Class for UUID Processing Errors
+    ls_items-item_no = sy-tabix.
+
+    APPEND ls_items TO lt_items.
+
+  ENDLOOP.
+
+  INSERT zbip_orders_i FROM TABLE lt_items.
+
+  ls_deep_entity-order_id = ls_order-order_id.
+
+  me->copy_data_to_ref(
+    EXPORTING
+      is_data = ls_deep_entity
+    CHANGING
+      cr_data = er_deep_entity
+  ).
+
+  endmethod.

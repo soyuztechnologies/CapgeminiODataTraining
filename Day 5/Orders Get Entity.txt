@@ -1,0 +1,10 @@
+  method ORDERSSET_GET_ENTITY.
+
+     READ TABLE it_key_tab INTO data(ls_key) INDEX 1.
+     Data : lv_ord_id TYPE char32.
+     lv_ord_id = ls_key-value.
+     Select single * from zbip_orders1 INTO CORRESPONDING FIELDS 
+       OF er_entity where order_id = lv_ord_id.
+     If sy-subrc EQ 0.
+     Endif.
+  endmethod.

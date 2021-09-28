@@ -1,0 +1,17 @@
+class ZCL_ZBIP_ODATA_MPC_EXT definition
+  public
+  inheriting from ZCL_ZBIP_ODATA_MPC
+  create public .
+
+public section.
+
+  types:
+    Begin of TS_DEEP_ENTITY,
+                ORDER_ID TYPE CHAR32,
+                ORDER_NO TYPE INT4,
+                ORDER_DATE TYPE DATS,
+                CUSTOMER_NAME TYPE CHAR255,
+                TOTAL_AMOUNT TYPE zbip_orders1-total_amount,
+                CURRENCY TYPE zbip_orders1-currency,
+                OItemSus TYPE STANDARD TABLE OF zbip_orders_i WITH DEFAULT KEY,
+          End of TS_DEEP_ENTITY .
