@@ -1,0 +1,49 @@
+------Action------
+
+class ZCL_MAR_A_APPROVE definition
+  public
+  inheriting from /BOBF/CL_LIB_A_SUPERCL_SIMPLE
+  final
+  create public .
+
+public section.
+
+  methods /BOBF/IF_FRW_ACTION~EXECUTE
+    redefinition .
+protected section.
+private section.
+ENDCLASS.
+
+CLASS ZCL_MAR_A_APPROVE IMPLEMENTATION.
+  method /BOBF/IF_FRW_ACTION~EXECUTE.
+
+    data: lt_data type ZTMAR_CDS_BOPF.
+    "Read data from the screen if needed
+    io_read->retrieve(
+      exporting
+        iv_node                 = is_ctx-node_key
+        it_key                  = it_key
+       importing
+         et_data                 = lt_data
+    ).
+
+    "Read the row as an object
+    loop at lt_data reference into data(lo_record).
+
+        lo_record->status = abap_true.
+
+        io_modify->update(
+          exporting
+            iv_node           = is_ctx-node_key
+            iv_key            = lo_record->key
+            iv_root_key       = lo_record->key
+            is_data           = lo_record
+            it_changed_fields = value #( ( ZIF_MAR_CDS_BOPF_C=>sc_node_attribute-zmar_cds_bopf-status ) )
+        ).
+*        catch /bobf/cx_frw_contrct_violation.
+
+    endloop.
+  endmethod.
+ENDCLASS.
+
+

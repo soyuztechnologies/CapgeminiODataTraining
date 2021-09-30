@@ -1,0 +1,50 @@
+------Metadata------
+
+@Metadata.layer: #CORE
+annotate view ZMAR_CDS_BOPF
+    with 
+{
+    @UI.facet: [
+    {
+        id:              'HeaderFacet',
+       purpose:         #HEADER,
+       type:            #FIELDGROUP_REFERENCE,
+       label:           'Object Page - Header Facet',
+       targetQualifier: 'Fieldgroup:HeaderItems', // Refers to lineItems with @UI.fieldGroup: [{qualifier: 'Fieldgroup:HeaderItems'}]
+       position:         10
+    },
+    {
+        id: 'FieldGroup1',
+        type: #FIELDGROUP_REFERENCE,
+        label: 'Flight Meal' ,
+        targetQualifier: 'FieldGroup1'     
+     }]
+     
+    @UI.fieldGroup: [{qualifier: 'Fieldgroup:HeaderItems'}]
+    meal_id;
+    @UI.selectionField: [{position: 10 }]
+    @UI.lineItem: [{position: 10 }]
+    @UI.identification: [{position: 10 }]
+    @UI.fieldGroup: [{qualifier: 'FieldGroup1', position: 10 }]
+    carrid;
+    @UI.selectionField: [{position: 20 }]
+    @UI.lineItem: [{position: 20 }]
+    @UI.identification: [{position: 20 }]
+    @UI.fieldGroup: [{qualifier: 'FieldGroup1', position: 20 }]
+    connid;
+    @UI.lineItem: [{position: 30 }]
+    @UI.identification: [{position: 30 }]
+    @UI.fieldGroup: [{qualifier: 'FieldGroup1', position: 30 }]
+    meal;
+    @UI.lineItem: [{position: 40 }]
+    @UI.identification: [{position: 40 }]
+    @UI.fieldGroup: [{qualifier: 'FieldGroup1', position: 40 }]
+    total_seats;
+    @UI.lineItem: [{position: 50, label: 'Approve', type: #FOR_ACTION, dataAction: 'BOPF:APPROVE' }]
+    @UI.identification: [{position: 50 }]
+    @UI.fieldGroup: [{qualifier: 'FieldGroup1', position: 50 }]
+    status;
+    
+}
+
+
