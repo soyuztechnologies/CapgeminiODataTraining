@@ -1,0 +1,52 @@
+  method ORDERITMSSET_GET_ENTITYSET.
+DATA:      ls_max_rows   TYPE bapi_epm_max_rows,
+           lv_so_id      TYPE bapi_epm_so_id,
+           lt_orderitems TYPE TABLE OF bapi_epm_so_item,
+           ls_orderitems TYPE bapi_epm_so_item,
+           lwa_key_tab   TYPE /iwbep/s_mgw_name_value_pair,
+           ls_entityset  TYPE ZCL_ZSL_EMP_DEMO_MPC=>Ts_ORDERITMS.
+
+* To get the Sales Order#
+    READ TABLE it_key_tab INTO lwa_key_tab WITH KEY name = 'SoId'.
+    IF sy-subrc = 0.
+      lv_so_id = lwa_key_tab-value.
+    ENDIF.
+
+* if Sales Order is not available in the request,retrieve
+* first 20 Sales Orders Items
+    IF lv_so_id IS INITIAL.
+      ls_max_rows-bapimaxrow = 20.
+      CALL FUNCTION 'BAPI_EPM_SO_GET_LIST'
+        EXPORTING
+          max_rows   = ls_max_rows
+        TABLES
+          soitemdata = lt_orderitems.
+      IF lt_orderitems IS NOT INITIAL.
+        LOOP AT lt_orderitems INTO ls_orderitems.
+          MOVE-CORRESPONDING ls_orderitems TO ls_entityset.
+          APPEND ls_entityset TO et_entityset.
+        ENDLOOP.
+      ENDIF.
+    ELSE.
+
+* if Sales Order is available in the request,retrieve
+* it's Order Items
+      CALL FUNCTION 'CONVERSION_EXIT_ALPHA_INPUT'
+        EXPORTING
+          input  = lv_so_id
+        IMPORTING
+          output = lv_so_id.
+
+      CALL FUNCTION 'BAPI_EPM_SO_GET_DETAIL'
+        EXPORTING
+          so_id    = lv_so_id
+        TABLES
+          itemdata = lt_orderitems.
+      IF lt_orderitems IS NOT INITIAL.
+        LOOP AT lt_orderitems INTO ls_orderitems.
+          MOVE-CORRESPONDING ls_orderitems TO ls_entityset.
+          APPEND ls_entityset TO et_entityset.
+        ENDLOOP.
+      ENDIF.
+    ENDIF.
+  endmethod.

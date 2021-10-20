@@ -1,0 +1,33 @@
+ DATA : ls_bapi_max TYPE bapi_epm_max_rows,
+           ls_entity   TYPE zcl_z_first_mpc=>ts_supplier,
+           lt_header   TYPE TABLE OF bapi_epm_bp_header,
+           lv_top      TYPE i,
+           lv_skip     TYPE i,
+           lv_all      TYPE i.
+
+    lv_skip = is_paging-skip.
+    lv_top = is_paging-top.
+    lv_all = lv_skip + lv_top.
+
+    ls_bapi_max-bapimaxrow = lv_all.
+
+    CALL FUNCTION 'BAPI_EPM_BP_GET_LIST'
+      EXPORTING
+        max_rows     = ls_bapi_max
+      TABLES
+*       SELPARAMBPID =
+*       SELPARAMCOMPANYNAME       =
+        bpheaderdata = lt_header
+*       BPCONTACTDATA             =
+*       RETURN       =
+      .
+
+IF lv_all > 0.
+  LOOP AT lt_header into data(ls_header) from lv_skip + 1 to lv_all .
+    move-corresponding ls_header to ls_entity.
+    append ls_entity to et_entityset.
+  ENDLOOP.
+  else.
+    et_entityset = corresponding #( lt_header ).
+
+ENDIF.
