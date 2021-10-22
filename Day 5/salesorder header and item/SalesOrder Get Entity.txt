@@ -1,21 +1,30 @@
   method SALESORDERSET_GET_ENTITY.
-DATA: lwa_key_tab TYPE /iwbep/s_mgw_name_value_pair,
-      lv_so_id    TYPE snwd_so_id,
-      lwa_snwd_so TYPE snwd_so.
+  DATA: lwa_key_tab TYPE /iwbep/s_mgw_name_value_pair,
+          lv_so_id    TYPE BAPI_EPM_SO_ID,
+          ls_header   type bapi_epm_so_header,
+          lwa_snwd_so TYPE snwd_so.
 
-* To get the Sales Order#
+*     To get the Sales Order#
 READ TABLE it_key_tab INTO lwa_key_tab WITH KEY name = 'SoId'.
 IF sy-subrc = 0.
-lv_so_id = lwa_key_tab-value.
+      lv_so_id = lwa_key_tab-value.
 ENDIF.
 
-* Alpha Conversion
+*     Alpha Conversion
 CALL FUNCTION 'CONVERSION_EXIT_ALPHA_INPUT'
-  EXPORTING
-    input         = lv_so_id
- IMPORTING
-   output        = lv_so_id.
+EXPORTING
+input  = lv_so_id
+IMPORTING
+output = lv_so_id.
 
-* Get the data from the table
-SELECT SINGLE * FROM snwd_so INTO CORRESPONDING FIELDS OF er_entity WHERE so_id = lv_so_id.
-  endmethod.
+*     Get the data from the table
+call function 'BAPI_EPM_SO_GET_DETAIL'
+EXPORTING
+         so_id      = lv_so_id                 " EPM: Sales Order ID to be used in BAPIs
+IMPORTING
+         headerdata = ls_header                 " EPM: Sales Order header data of BOR object 'EpmSalesOrder'
+.  
+
+
+MOVE-CORRESPONDING ls_header to er_entity.
+endmethod.
