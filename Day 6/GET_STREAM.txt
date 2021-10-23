@@ -1,0 +1,38 @@
+method /IWBEP/IF_MGW_APPL_SRV_RUNTIME~GET_STREAM.
+
+    DATA: LS_MEDIA TYPE ty_s_media_resource,
+          LS_HEADER TYPE bapi_epm_product_header,
+          LV_PRODUCT_ID TYPE BAPI_EPM_PRODUCT_ID.
+
+    READ TABLE IT_KEY_TAB INTO DATA(LS_KEY) INDEX 1.
+    LV_PRODUCT_ID = LS_KEY-value.
+
+    CALL FUNCTION 'BAPI_EPM_PRODUCT_GET_DETAIL'
+      exporting
+        product_id         = LV_PRODUCT_ID                 " EPM: Product header data of BOR object SEPM002
+      importing
+        headerdata         = LS_HEADER                 " EPM: Product header data of BOR object SEPM002
+*      tables
+*        conversion_factors =                  " EPM: Product conversion factor data of BOR object SEPM002
+*        return             =                  " Return Parameter
+      .
+
+
+    cl_mime_repository_api=>get_api( )->get(
+      exporting
+        i_url                  = LS_HEADER-product_pic_url                 " Object URL
+*        i_check_authority      = 'X'              " X Check Authorization, '' No Authorization Check
+       importing
+         e_content              = LS_MEDIA-value                 " Object Contents
+         e_mime_type            = LS_MEDIA-mime_type                " MIME Type
+    ).
+
+
+    ME->copy_data_to_ref(
+      exporting
+        is_data = LS_MEDIA
+      changing
+        cr_data = ER_STREAM
+    ).
+
+  endmethod.

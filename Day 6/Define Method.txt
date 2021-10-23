@@ -1,0 +1,5 @@
+method DEFINE.
+	SUPER->define().
+	ME->model->get_entity_type('Product')->get_property('PRODUCT_PIC_URL')->set_as_content_source().
+	ME->model->get_entity_type('Product')->get_property('MIME_TYPE')->set_as_content_type().
+endmethod.
