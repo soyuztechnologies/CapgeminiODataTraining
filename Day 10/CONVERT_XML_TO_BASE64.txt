@@ -1,0 +1,18 @@
+CONVERT_XML_TO_BASE64
+
+  method CONVERT_XML_TO_BASE64.
+        data: utility type ref to cl_http_utility.
+    create object utility.
+
+
+    e_base64 =  utility->escape_url(
+       exporting
+         unescaped =  i_xml   " Unencoded String
+         options   = 2
+     ).
+    call method utility->encode_base64
+      exporting
+        unencoded = e_base64    " Unencoded String
+      receiving
+        encoded   = e_base64.    " BASE64-Encoded String
+  endmethod.

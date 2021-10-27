@@ -1,0 +1,9 @@
+
+@EndUserText.label: 'travel service def for unmanaged scenario'
+define service Zats_00_sd_u_travel {
+  expose ZATS_00_C_U_TRAVEL as Travel;
+  expose ZATS_00_I_U_CUSTOMER as Customer;
+  expose ZATS_00_I_U_agency as TravelAgency;
+  expose I_Currency;
+  expose I_Country;
+}
